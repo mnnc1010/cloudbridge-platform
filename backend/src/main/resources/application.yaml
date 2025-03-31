@@ -9,3 +9,23 @@ spring:
       host: localhost
       port: 27017
       database: cloudbridge_db
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health, info, metrics
+  info:
+    app:
+      name: CloudBridge Backend
+      version: "0.0.1"
+aws:
+  dynamodb:
+    region: us-east-2
+    tableName: CloudBridgeResources
+    endpoint: https://dynamodb.us-east-2.amazonaws.com
+    # Instead of actual keys, use placeholders that reference environment variables.
+    # Export them from the local terminal
+    # export AWS_DEV_ACCESS_KEY_ID=your_access_key_here
+    # export AWS_DEV_SECRET_ACCESS_KEY=your_secret_key_here
+    accessKey: ${AWS_DEV_ACCESS_KEY_ID}
+    secretKey: ${AWS_DEV_SECRET_ACCESS_KEY}
