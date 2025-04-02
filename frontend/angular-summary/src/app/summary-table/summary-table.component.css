@@ -1,0 +1,4 @@
+/* Ensures the table spans the full width of its container */
+.full-width-table {
+  width: 100%;
+}

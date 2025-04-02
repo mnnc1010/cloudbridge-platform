@@ -1,0 +1,43 @@
+<!--
+  Angular Material Table Template for displaying resource summary.
+  The table shows columns for file name, file type, file storage, date inserted, and date modified.
+-->
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" class="full-width-table">
+
+    <!-- File Name Column -->
+    <ng-container matColumnDef="fileName">
+      <th mat-header-cell *matHeaderCellDef> File Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.fileName}} </td>
+    </ng-container>
+
+    <!-- File Type Column -->
+    <ng-container matColumnDef="fileType">
+      <th mat-header-cell *matHeaderCellDef> File Type </th>
+      <td mat-cell *matCellDef="let element"> {{element.fileType}} </td>
+    </ng-container>
+
+    <!-- File Storage Column -->
+    <ng-container matColumnDef="fileStorage">
+      <th mat-header-cell *matHeaderCellDef> File Storage </th>
+      <td mat-cell *matCellDef="let element"> {{element.fileStorage}} </td>
+    </ng-container>
+
+    <!-- Date Inserted Column -->
+    <ng-container matColumnDef="dateInserted">
+      <th mat-header-cell *matHeaderCellDef> Date Inserted </th>
+      <td mat-cell *matCellDef="let element"> {{element.dateInserted}} </td>
+    </ng-container>
+
+    <!-- Date Modified Column -->
+    <ng-container matColumnDef="dateModified">
+      <th mat-header-cell *matHeaderCellDef> Date Modified </th>
+      <td mat-cell *matCellDef="let element"> {{element.dateModified}} </td>
+    </ng-container>
+
+    <!-- Header Row Definition -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <!-- Data Row Definition -->
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
