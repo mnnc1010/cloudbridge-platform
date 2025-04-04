@@ -6,11 +6,14 @@ import { MatTableModule } from '@angular/material/table';
 
 import { AppComponent } from './app.component';
 import { SummaryTableComponent } from './summary-table/summary-table.component';
+import { CustomDateFormatPipe } from './pipes/custom-date-format.pipe';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    SummaryTableComponent
+    SummaryTableComponent,
+    CustomDateFormatPipe
   ],
   imports: [
     BrowserModule,

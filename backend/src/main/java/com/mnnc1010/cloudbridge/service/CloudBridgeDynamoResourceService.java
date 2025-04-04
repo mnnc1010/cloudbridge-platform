@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +61,16 @@ public class CloudBridgeDynamoResourceService {
             resource.setId(UUID.randomUUID().toString());
             System.out.println("Generated new UUID: " + resource.getId());
         }
+
+        // Set dateInserted and dateModified to current timestamp if not provided.
+        String now = Instant.now().toString();
+        if (resource.getDateInserted() == null || resource.getDateInserted().trim().isEmpty()) {
+            resource.setDateInserted(now);
+        }
+        if (resource.getDateModified() == null || resource.getDateModified().trim().isEmpty()) {
+            resource.setDateModified(now);
+        }
+
         return repository.save(resource);
     }
 }

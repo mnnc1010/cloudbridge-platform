@@ -24,18 +24,61 @@ cloudbridge-platform/
 │   ├── pom.xml                       # Maven project descriptor
 │   └── README.md                     # Optional backend-specific docs
 │
-├── frontend/                         # 💻 Angular frontend
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── components/           # Angular components (UI)
-│   │   │   ├── services/             # API services and interceptors
-│   │   │   └── app.module.ts         # Main Angular module
-│   │   ├── assets/                   # Images, icons, styles
-│   │   └── environments/             # Angular envs (dev, prod)
-│   ├── angular.json                  # Angular CLI config
-│   ├── package.json                  # npm package definitions
-│   ├── tsconfig.json                 # TypeScript configuration
-│   └── README.md                     # Optional frontend-specific docs
+├── frontend/
+│   │── shell/                           # Container/shell app that brings all frontends together.
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── angular-summary-wrapper/      # A wrapper component for the Angular app.
+│   │   │   │   │   │   ├── angular-summary-wrapper.component.ts
+│   │   │   │   │   │   ├── angular-summary-wrapper.component.html
+│   │   │   │   │   │   └── angular-summary-wrapper.component.css
+│   │   │   │   │   ├── react-insert-wrapper/         # A wrapper component for the React app.
+│   │   │   │   │   │   ├── react-insert-wrapper.component.ts
+│   │   │   │   │   │   ├── react-insert-wrapper.component.html
+│   │   │   │   │   │   └── react-insert-wrapper.component.css
+│   │   │   │   │   └── vue-stream-wrapper/           # A wrapper component for the Vue app.
+│   │   │   │   │       ├── vue-stream-wrapper.component.ts
+│   │   │   │   │       ├── vue-stream-wrapper.component.html
+│   │   │   │   │       └── vue-stream-wrapper.component.css
+│   │   │   │   └── app.component.ts                 # The main container component.
+│   │   │   ├── assets/
+│   │   │   └── environments/                        # Environment configuration (dev, prod, etc.)
+│   │   ├── angular.json
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── README.md
+│   │── angular-summary/           # Angular project dedicated to the summary table UI.
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── summary-table/  # Contains the Angular summary table component
+│   │   │   │   │   ├── summary-table.component.ts
+│   │   │   │   │   ├── summary-table.component.html
+│   │   │   │   │   └── summary-table.component.css
+│   │   │   │   └── app.module.ts   # Module for the Angular summary app.
+│   │   │   └── environments/
+│   │   ├── angular.json
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── README.md
+│   │── react-insert/              # React project for file upload/insertion.
+│   │   ├── src/
+│   │   │   ├── App.js
+│   │   │   ├── components/
+│   │   │   │   └── InsertForm.jsx    # Component that handles file upload.
+│   │   │   └── index.js
+│   │   ├── public/
+│   │   ├── package.json
+│   │   └── README.md
+│   │── vue-stream/                # Vue project for viewing/streaming files.
+│       ├── src/
+│       │   ├── App.vue
+│       │   ├── components/
+│       │   │   └── FileViewer.vue    # Component for streaming/playing files.
+│       │   └── main.js
+│       ├── public/
+│       ├── package.json
+│       └── README.md
 │
 ├── k8s/                              # ☸️ Kubernetes deployment files
 │   ├── backend-deployment.yaml       # Backend Deployment & Service

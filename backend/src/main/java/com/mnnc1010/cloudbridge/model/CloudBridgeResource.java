@@ -6,97 +6,124 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
 /**
- * Represents a resource within the CloudBridge Platform.
+ * Represents a file resource in the CloudBridge Platform.
  *
- * <p>This domain model is used for both MongoDB and AWS DynamoDB. The MongoDB mapping is handled by
- * Spring Data annotations, while the DynamoDB Enhanced Client requires the {@code @DynamoDbBean} annotation.
- * The primary key for DynamoDB is defined with {@code @DynamoDbPartitionKey} on the {@code getId()} method.
- * </p>
+ * <p>This model is used for both MongoDB and AWS DynamoDB. In addition to the original
+ * fields (fileName, fileType, fileStorage, dateInserted, dateModified), we have added new fields:
+ * <ul>
+ *   <li>fileSize: The size of the file in bytes.</li>
+ *   <li>fileOwner: The owner or uploader of the file.</li>
+ * </ul>
+ * These fields will be returned in the JSON response so that your Angular UI can display them.</p>
  */
-@Document(collection = "resources") // MongoDB mapping: stored in the "resources" collection.
-@DynamoDbBean // DynamoDB mapping: indicates this is a DynamoDb bean.
+@Document(collection = "resources")  // For MongoDB mapping.
+@DynamoDbBean                        // For DynamoDB mapping.
 public class CloudBridgeResource {
 
-    @Id // MongoDB annotation for the document ID.
+    @Id  // MongoDB document ID.
     private String id;
-    private String name;
-    private String type;
-    private String description;
+    private String fileName;
+    private String fileType;
+    private String fileStorage;
+    private String fileDescription;
+    private Long fileSize;
+    private String fileOwner;
+    private String dateInserted;
+    private String dateModified;
+    private byte[] fileContent;
 
     /**
-     * Gets the unique identifier for the resource.
+     * The partition key for DynamoDB.
      *
-     * <p>
-     * The {@code @DynamoDbPartitionKey} annotation marks this getter as the partition key for DynamoDB.
-     * </p>
-     *
-     * @return the resource ID.
+     * @return the unique resource id.
      */
-    @DynamoDbPartitionKey // Indicates that this is the primary key in DynamoDB.
+    @DynamoDbPartitionKey
     public String getId() {
         return id;
     }
 
-    /**
-     * Sets the unique identifier for the resource.
-     *
-     * @param id the resource ID to set.
-     */
     public void setId(String id) {
         this.id = id;
     }
 
-    /**
-     * Gets the name of the resource.
-     *
-     * @return the resource name.
-     */
-    public String getName() {
-        return name;
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public String getFileStorage() {
+        return fileStorage;
+    }
+
+    public void setFileStorage(String fileStorage) {
+        this.fileStorage = fileStorage;
+    }
+
+    public String getFileDescription() {
+        return fileDescription;
+    }
+
+    public void setFileDescription(String fileDescription) {
+        this.fileDescription = fileDescription;
+    }
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public String getFileOwner() {
+        return fileOwner;
+    }
+
+    public void setFileOwner(String fileOwner) {
+        this.fileOwner = fileOwner;
+    }
+
+    public String getDateInserted() {
+        return dateInserted;
+    }
+
+    public void setDateInserted(String dateInserted) {
+        this.dateInserted = dateInserted;
+    }
+
+    public String getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(String dateModified) {
+        this.dateModified = dateModified;
     }
 
     /**
-     * Sets the name of the resource.
-     *
-     * @param name the resource name to set.
+     * Gets the binary content of the file.
+     * @return the file content as a byte array.
      */
-    public void setName(String name) {
-        this.name = name;
+    public byte[] getFileContent() {
+        return fileContent;
     }
 
     /**
-     * Gets the type of the resource.
-     *
-     * @return the resource type.
+     * Sets the binary content of the file.
+     * @param fileContent the file content as a byte array.
      */
-    public String getType() {
-        return type;
+    public void setFileContent(byte[] fileContent) {
+        this.fileContent = fileContent;
     }
 
-    /**
-     * Sets the type of the resource.
-     *
-     * @param type the resource type to set.
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-     * Gets the description of the resource.
-     *
-     * @return the resource description.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Sets the description of the resource.
-     *
-     * @param description the resource description to set.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }
