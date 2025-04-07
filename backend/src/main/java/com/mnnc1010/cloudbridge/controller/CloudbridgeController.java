@@ -44,6 +44,8 @@ import java.util.UUID;
  * </ul>
  * </p>
  */
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController // Marks this class as a REST controller, meaning that methods return data directly (usually as JSON).
 @RequestMapping("/api") // Base URL for all endpoints in this controller.
 public class CloudbridgeController {
@@ -97,14 +99,16 @@ public class CloudbridgeController {
 
     /**
      * Endpoint for uploading a file into MongoDB.
-     * Expects a multipart/form-data request with file and metadata.
+     * Accepts a multipart/form-data request with file and metadata.
      *
-     * @param file The uploaded file.
-     * @param fileName The file name.
-     * @param fileType The file type (MIME type, e.g., "application/pdf").
-     * @param fileDescription A description of the file.
-     * @param fileOwner The owner of the file.
-     * @return The saved CloudBridgeResource if successful, or a bad request response if validation fails.
+     * File size must be greater than 1MB and less than or equal to 2MB.
+     *
+     * @param file the uploaded file
+     * @param fileName the file name
+     * @param fileType the file type (e.g., "application/pdf", "image/jpeg")
+     * @param fileDescription description of the file
+     * @param fileOwner owner of the file
+     * @return a success message if uploaded, or a bad request error if validation fails
      */
     @PostMapping(value = "/mongo/resources", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadToMongo(
@@ -114,19 +118,17 @@ public class CloudbridgeController {
             @RequestParam("fileDescription") String fileDescription,
             @RequestParam("fileOwner") String fileOwner) {
 
-        // Validate file size: Must be > 1 MB and ≤ 2 MB for MongoDB upload.
         long fileSize = file.getSize();
         long oneMB = 1048576;
         long twoMB = 2097152;
 
+        // Validate file size for MongoDB: must be > 1MB and <= 2MB.
         if (fileSize <= oneMB || fileSize > twoMB) {
             return ResponseEntity.badRequest()
-                    .body("File size for MongoDB must be greater than 1MB and less than or equal to 2MB.");
+                    .body("For MongoDB, file size must be greater than 1MB and less than or equal to 2MB.");
         }
 
-        // Create and populate the CloudBridgeResource model.
         CloudBridgeResource resource = new CloudBridgeResource();
-        // Generate an ID if one is not provided.
         resource.setId(UUID.randomUUID().toString());
         resource.setFileName(fileName);
         resource.setFileType(fileType);
@@ -134,16 +136,20 @@ public class CloudbridgeController {
         resource.setFileDescription(fileDescription);
         resource.setFileOwner(fileOwner);
         resource.setFileSize(fileSize);
+
         try {
             // Read file content as bytes and set it in the resource.
             resource.setFileContent(file.getBytes());
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error reading file content.");
         }
-        // Call the service layer to save the resource.
-        CloudBridgeResource savedResource = mongoService.createResource(resource);
-        return ResponseEntity.ok(savedResource);
+
+        // Save the resource (dateInserted and dateModified are set by the service or database).
+        mongoService.createResource(resource);
+        // Return a simple success message.
+        return ResponseEntity.ok("Successfully Uploaded to MongoDB");
     }
+
     // ---------------------- DynamoDB Endpoints ---------------------- //
 
     /**
@@ -158,14 +164,16 @@ public class CloudbridgeController {
 
     /**
      * Endpoint for uploading a file into DynamoDB.
-     * Expects a multipart/form-data request with file and metadata.
+     * Accepts a multipart/form-data request with file and metadata.
      *
-     * @param file The uploaded file.
-     * @param fileName The file name.
-     * @param fileType The file type.
-     * @param fileDescription A description of the file.
-     * @param fileOwner The owner of the file.
-     * @return The saved CloudBridgeResource if successful, or a bad request response if validation fails.
+     * File size must be less than 1MB.
+     *
+     * @param file the uploaded file
+     * @param fileName the file name
+     * @param fileType the file type
+     * @param fileDescription description of the file
+     * @param fileOwner owner of the file
+     * @return a success message if uploaded, or a bad request error if validation fails
      */
     @PostMapping(value = "/dynamo/resources", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadToDynamo(
@@ -175,15 +183,15 @@ public class CloudbridgeController {
             @RequestParam("fileDescription") String fileDescription,
             @RequestParam("fileOwner") String fileOwner) {
 
-        // Validate file size: Must be < 1 MB for DynamoDB upload.
         long fileSize = file.getSize();
         long oneMB = 1048576;
+
+        // Validate file size for DynamoDB: must be < 1MB.
         if (fileSize >= oneMB) {
             return ResponseEntity.badRequest()
-                    .body("File size for DynamoDB must be less than 1MB.");
+                    .body("For DynamoDB, file size must be less than 1MB.");
         }
 
-        // Create and populate the CloudBridgeResource model.
         CloudBridgeResource resource = new CloudBridgeResource();
         resource.setId(UUID.randomUUID().toString());
         resource.setFileName(fileName);
@@ -192,16 +200,18 @@ public class CloudbridgeController {
         resource.setFileDescription(fileDescription);
         resource.setFileOwner(fileOwner);
         resource.setFileSize(fileSize);
+
         try {
-            // Read file content as bytes and set it in the resource.
+            // Read file content as bytes.
             resource.setFileContent(file.getBytes());
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error reading file content.");
         }
 
-        // Save the resource using the DynamoDB service.
-        CloudBridgeResource savedResource = dynamoService.createResource(resource);
-        return ResponseEntity.ok(savedResource);
+        // Save the resource.
+        dynamoService.createResource(resource);
+        // Return a success message.
+        return ResponseEntity.ok("Successfully Uploaded to DynamoDB");
     }
 
     // ---------------------- Aggregated Endpoint ---------------------- //

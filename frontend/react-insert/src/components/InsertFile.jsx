@@ -105,11 +105,11 @@ const InsertFile = () => {
         method: 'POST',
         body: formData,
       });
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers.get('content-type'));
       if (!response.ok) {
         throw new Error(`Server responded with ${response.status}`);
       }
-      const result = await response.json();
-      console.log('File uploaded successfully:', result);
       alert('File uploaded successfully!');
       // Reset the form after successful upload.
       setSelectedFile(null);
